@@ -14,6 +14,10 @@ inputs:
     description: "Name of the Database column for the description field: this is the commit message after a carriage return."
     required: true
     default: "Description"
+  commit_user:
+    description: "Name of the Database column for the commiter field"
+    required: true
+    default: "User"
   commit_url:
     description: "Name of Database column for commit url"
     required: true

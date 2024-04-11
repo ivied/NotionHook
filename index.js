@@ -8,6 +8,7 @@ async function connectToNotion(notion) {
 }
 
 
+
 async function createCommit(notion, commits) {
   commits.forEach((commit) => {
     const array = commit.message.split(/\r?\n/);
@@ -63,6 +64,13 @@ async function createCommit(notion, commits) {
             }
           ]
           
+        },
+        [core.getInput('commit_user')]:{
+          multi_select:[
+            {
+              name: commit.committer.username
+            }
+          ]
         }
       },
       children: [
