@@ -7059,6 +7059,16 @@ async function createCommit(notion, commits) {
             }
           ]
         },
+        [core.getInput('commit_user')]:{
+          rich_text:[
+            {
+              type: 'text',
+              text:{
+                content: commit.committer
+              }
+            }
+          ]
+        },
         [core.getInput('commit_project')]:{
           multi_select:[
             {
