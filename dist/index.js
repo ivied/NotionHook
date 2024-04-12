@@ -1,3 +1,5 @@
+const { type } = require("os");
+
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
@@ -7060,12 +7062,9 @@ async function createCommit(notion, commits) {
           ]
         },
         [core.getInput('commit_user')]:{
-          rich_text:[
+          multi_select:[
             {
-              type: 'text',
-              text:{
-                content: commit.committer.name
-              }
+              name: commit.committer.name
             }
           ]
         },
