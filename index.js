@@ -71,7 +71,7 @@ async function createCommit(notion, commits) {
             {
               type: 'text',
               text:{
-                content:commit.commiter.username
+                content:commit.commiter
               }
             }
           ]
