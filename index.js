@@ -1,6 +1,7 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const { Client } = require('@notionhq/client')
+const { Client } = require('@notionhq/client');
+const { usersList } = require('@notionhq/client/build/src/api-endpoints');
 
 async function connectToNotion(notion) {
   const response = notion.databases.retrieve({ database_id: core.getInput('notion_database') })
@@ -66,9 +67,12 @@ async function createCommit(notion, commits) {
           
         },
         [core.getInput('commit_user')]:{
-          multi_select:[
+          rich_text:[
             {
-              name: commit.committer.username
+              type: 'text',
+              text:{
+                content:commit.committer.username
+              }
             }
           ]
         }
