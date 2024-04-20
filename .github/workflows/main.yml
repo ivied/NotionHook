@@ -15,7 +15,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14' # Choose your Node.js version
+          node-version: '14' # Ensure this matches the version used during development
       - name: Install dependencies
         run: npm install
       - name: Install polyfills
@@ -27,6 +27,7 @@ jobs:
         with:
           name: dist
           path: dist/
+
   release:
     needs: build
     runs-on: ubuntu-latest
@@ -54,7 +55,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/your-artifact.zip # Replace with the path to your artifact
-          asset_name: your-artifact.zip # Replace with your artifact name
-          asset_content_type: application/zip # Replace with the appropriate content type for your asset
-  
+          asset_path: ./dist/index.js
+          asset_name: index.js
+          asset_content_type: application/javascript
