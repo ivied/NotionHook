@@ -29,20 +29,6 @@ module.exports = {
     '@actions/github': 'commonjs @actions/github',
     // Add other modules that you don't want to bundle for Node.js here
   },
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env'],
-          },
-        },
-      },
-      // You can add other rules for different file types here
-    ],
-  },
+  
   // Add any other Webpack plugins you need here
 };
