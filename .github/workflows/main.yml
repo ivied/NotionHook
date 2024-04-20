@@ -52,7 +52,8 @@ jobs:
           draft: false
           prerelease: false
           commitish: ${{ github.sha }}
-
+      - name: List contents of dist
+        run: ls -al dist/
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
