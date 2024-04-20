@@ -19,6 +19,13 @@ async function createCommit(notion, commits) {
       description +=  ' '+element
     })
 
+    const index = commit.message.indexOf("hiq-");
+    const task = index !== -1 ? commit.message.substring(index + 4, index + 4 + 3) : '';
+
+    const page = notion.pages.filter(
+      (page) => page.properties.id === task
+    )[0];
+    
     notion.pages.create({
       parent: {
         database_id: core.getInput('notion_database')
@@ -34,6 +41,9 @@ async function createCommit(notion, commits) {
               }
             }
           ]
+        },
+        task: {
+          relation: [{ id: page.id }],
         },
         [core.getInput('commit_url')]:{
           url: commit.url
