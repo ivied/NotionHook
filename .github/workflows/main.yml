@@ -15,7 +15,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14' # Ensure this matches the version used during development
+          node-version: '14'
       - name: Install dependencies
         run: npm install
       - name: Install polyfills
@@ -27,6 +27,22 @@ jobs:
         with:
           name: dist
           path: dist/
+
+      - name: Increment tag if exists
+        id: increment_tag
+        run: |
+          TAG_NAME=${{ github.ref_name }}
+          EXISTS=$(git tag | grep "^$TAG_NAME$" | wc -l)
+          COUNT=1
+          NEW_TAG=$TAG_NAME
+          while [ $EXISTS -ne 0 ]; do
+            NEW_TAG="${TAG_NAME}-${COUNT}"
+            EXISTS=$(git tag | grep "^$NEW_TAG$" | wc -l)
+            COUNT=$((COUNT + 1))
+          done
+          echo "::set-output name=tag_name::$NEW_TAG"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   release:
     needs: build
@@ -43,8 +59,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
+          tag_name: ${{ steps.increment_tag.outputs.tag_name }}
+          release_name: Release ${{ steps.increment_tag.outputs.tag_name }}
           draft: false
           prerelease: false
           commitish: ${{ github.sha }}
