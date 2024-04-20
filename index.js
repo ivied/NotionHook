@@ -21,10 +21,12 @@ async function createCommit(notion, commits) {
 
     const index = commit.message.indexOf("hiq-");
     const task = index !== -1 ? commit.message.substring(index + 4, index + 4 + 3) : '';
+    core.info(`Extracted task ID: ${task}`);  // Log the task ID extracted from the commit message
 
     const page = notion.pages.filter(
       (page) => page.properties.id === task
     )[0];
+    core.info(`Page found: ${page ? page.id : 'No page found'}`); 
     
     notion.pages.create({
       parent: {
