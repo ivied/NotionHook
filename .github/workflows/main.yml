@@ -35,13 +35,26 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: dist
+
       - name: Create GitHub Release
+        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
-          files: dist/*
+          commitish: ${{ github.sha }}
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/your-artifact.zip # Replace with the path to your artifact
+          asset_name: your-artifact.zip # Replace with your artifact name
+          asset_content_type: application/zip # Replace with the appropriate content type for your asset
+  
