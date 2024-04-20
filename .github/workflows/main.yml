@@ -4,35 +4,62 @@ on:
   push:
     branches:
       - main
+  release:
+    types: [created]
 
 jobs:
-  build_and_release:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '14' # Ensure this matches the version used during development
       - name: Install dependencies
         run: npm install
+      - name: Install polyfills
+        run: npm install os-browserify browserify-fs stream-http https-browserify events assert util path-browserify --save-dev
       - name: Run build script
         run: npm run build
-      - name: Determine Tag Name
-        id: increment_tag
-        run: |
-          echo "::set-output name=tag_name::$(date +v%Y%m%d)"
-        shell: bash
-      - name: Create GitHub Release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ steps.increment_tag.outputs.tag_name }}
-          release_name: Release ${{ steps.increment_tag.outputs.tag_name }}
-          draft: false
-          prerelease: false
-          commitish: ${{ github.sha }}
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: dist
           path: dist/
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+
+      - name: Generate tag based on date and time
+        id: tag_generator
+        run: echo "::set-output name=tag_name::release-$(date +'%Y%m%d%H%M%S')"
+        shell: bash
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag_generator.outputs.tag_name }}
+          release_name: Release ${{ steps.tag_generator.outputs.tag_name }}
+          draft: false
+          prerelease: false
+          commitish: ${{ github.sha }}
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/index.js
+          asset_name: index.js
+          asset_content_type: application/javascript
