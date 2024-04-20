@@ -12,8 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14' # Choose your Node.js version
       - name: Install dependencies
         run: npm install
+      - name: Install polyfills
+        run: npm install os-browserify browserify-fs stream-http https-browserify events assert util path-browserify --save-dev
       - name: Run build script
         run: npm run build
       - name: Upload artifact
