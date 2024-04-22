@@ -26,7 +26,7 @@ async function createCommit(notion, commits) {
 
     // Retrieve the page with the matching task ID using the Notion API
     const databaseId = core.getInput('notion_database');
-    const response = await notion.databases.query({
+    const response =  notion.databases.query({
       database_id: databaseId,
       filter: {
         property: 'id',
@@ -39,9 +39,6 @@ async function createCommit(notion, commits) {
 
     core.info(`Page found: ${page ? page.id : 'No page found'}`); 
 
-    notion.pages.create({
-    core.info(`Page found: ${page ? page.id : 'No page found'}`); 
-    
     notion.pages.create({
       parent: {
         database_id: core.getInput('notion_database')
