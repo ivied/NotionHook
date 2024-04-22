@@ -24,9 +24,22 @@ async function createCommit(notion, commits) {
     core.info(`Extracted task ID: ${task}`);  // Log the task ID extracted from the commit message
     console.log("This is a test log message.");
 
-    const page = notion.pages.filter(
-      (page) => page.properties.id === task
-    )[0];
+    // Retrieve the page with the matching task ID using the Notion API
+    const databaseId = core.getInput('notion_database');
+    const response = await notion.databases.query({
+      database_id: databaseId,
+      filter: {
+        property: 'id',
+        text: {
+          contains: task
+        }
+      }
+    });
+    const page = response.results[0];
+
+    core.info(`Page found: ${page ? page.id : 'No page found'}`); 
+
+    notion.pages.create({
     core.info(`Page found: ${page ? page.id : 'No page found'}`); 
     
     notion.pages.create({
