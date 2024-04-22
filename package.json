@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "ncc build index.js -o dist"
+    "build": "ncc build index.js -o dist"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,9 @@
     "url": "https://github.com/alessandrobelli/NotionHook/issues"
   },
   "homepage": "https://github.com/alessandrobelli/NotionHook#readme",
+  "devDependencies": {
+    "@vercel/ncc": "^0.33.0"
+  }
   "dependencies": {
     "@actions/core": "^1.4.0",
     "@actions/github": "^5.0.0",
