@@ -11,7 +11,7 @@ async function connectToNotion(notion) {
 
 
 async function createCommit(notion, commits) {
-  commits.forEach((commit) => {
+  commits.forEach(async(commit) => {
     const array = commit.message.split(/\r?\n/);
     const title = array.shift();
     let description = ''
@@ -19,19 +19,19 @@ async function createCommit(notion, commits) {
       description +=  ' '+element
     })
 
-    const index = commit.message.indexOf("hqf-");
+    const index = commit.message.toUpperCase().indexOf("HQF-");
     const task = index !== -1 ? commit.message.substring(index + 4, index + 4 + 3) : '';
     core.info(`Extracted task ID: ${task}`);  // Log the task ID extracted from the commit message
     console.log("This is a test log message.");
 
-    // Retrieve the page with the matching task ID using the Notion API
-    const databaseId = core.getInput('notion_database');
-    const response =  notion.databases.query({
-      database_id: databaseId,
+    const taskDatabase = core.getInput('notion_task_database');
+    core.info(`Task Database ID: ${taskDatabase}`); 
+    const response =  await notion.databases.query({
+      database_id: taskDatabase,
       filter: {
-        property: 'id',
-        text: {
-          contains: task
+        property: 'Task ID',
+        number: {
+          equals: parseInt(task)
         }
       }
     });

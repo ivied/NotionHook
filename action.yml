@@ -10,6 +10,9 @@ inputs:
   notion_database:
     description: 'the id of the database you want to save the commits'
     required: true
+  notion_task_database:
+    description: 'the id of the database you want to get task links from'
+    required: true
   commit_description:
     description: "Name of the Database column for the description field: this is the commit message after a carriage return."
     required: true
