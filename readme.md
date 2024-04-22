@@ -55,3 +55,7 @@ jobs:
           notion_secret: ${{ secrets.NOTION_SECRET }}
           notion_database: ${{ secrets.NOTION_DATABASE }}
 ```
+
+To test project in Act use command:
+
+HQF-android-ios % act push --eventpath event.json --secret-file .secrets -b
