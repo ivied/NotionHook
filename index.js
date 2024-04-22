@@ -19,7 +19,7 @@ async function createCommit(notion, commits) {
       description +=  ' '+element
     })
 
-    const index = commit.message.indexOf("hiq-");
+    const index = commit.message.indexOf("hqf-");
     const task = index !== -1 ? commit.message.substring(index + 4, index + 4 + 3) : '';
     core.info(`Extracted task ID: ${task}`);  // Log the task ID extracted from the commit message
     console.log("This is a test log message.");
