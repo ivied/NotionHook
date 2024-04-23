@@ -22,15 +22,18 @@ async function createCommit(notion, commits) {
     const index = commit.message.toUpperCase().indexOf("HQF-");
     const task = index !== -1 ? commit.message.substring(index + 4, index + 4 + 3) : '';
     core.info(`Extracted task ID: ${task}`);  
-
+    if (!task) {  // Check if task is empty
+      core.info("No task ID found in commit, skipping...");
+      continue;  // Skip to the next commit
+   }
     core.info(`Extracted url: ${commit.url}`);
     core.info(`Extracted commit id: ${commit.id}`);
     core.info(`Extracted description: ${description}`);
     core.info(`Extracted repo name: ${github.context.repo.repo}`);
     core.info(`Extracted user name: ${commit.committer.name}`);
-
     
     const taskDatabase = core.getInput('notion_task_database');
+    
     core.info(`Task Database ID: ${taskDatabase}`); 
     const response =  await notion.databases.query({
       database_id: taskDatabase,
