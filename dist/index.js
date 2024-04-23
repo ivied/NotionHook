@@ -7014,7 +7014,7 @@ async function connectToNotion(notion) {
 
 
 async function createCommit(notion, commits) {
-  commits.forEach(async(commit) => {
+  for (const commit of commits) {
     const array = commit.message.split(/\r?\n/);
     const title = array.shift();
     let description = ''
@@ -7024,9 +7024,15 @@ async function createCommit(notion, commits) {
 
     const index = commit.message.toUpperCase().indexOf("HQF-");
     const task = index !== -1 ? commit.message.substring(index + 4, index + 4 + 3) : '';
-    core.info(`Extracted task ID: ${task}`);  // Log the task ID extracted from the commit message
-    console.log("This is a test log message.");
+    core.info(`Extracted task ID: ${task}`);  
 
+    core.info(`Extracted url: ${commit.url}`);
+    core.info(`Extracted commit id: ${commit.id}`);
+    core.info(`Extracted description: ${description}`);
+    core.info(`Extracted repo name: ${github.context.repo.repo}`);
+    core.info(`Extracted user name: ${commit.committer.name}`);
+
+    
     const taskDatabase = core.getInput('notion_task_database');
     core.info(`Task Database ID: ${taskDatabase}`); 
     const response =  await notion.databases.query({
@@ -7038,10 +7044,18 @@ async function createCommit(notion, commits) {
         }
       }
     });
+
+    if (response.results.length === 0) {
+      core.info('No matching pages found in Notion database.');
+      continue; // Skip further processing for this commit
+  }
+
     const page = response.results[0];
+
 
     core.info(`Page found: ${page ? page.id : 'No page found'}`); 
 
+   
     notion.pages.create({
       parent: {
         database_id: core.getInput('notion_database')
@@ -7117,13 +7131,14 @@ async function createCommit(notion, commits) {
         }
       ]
     })
-  })
+  }
 }
 
 
 (async () => {
   try {
     const notion = new Client({ auth: core.getInput('notion_secret') })
+    core.info(`Extracted commit: ${ JSON.stringify(github.context.payload, null, 2)}`);
     createCommit(notion, github.context.payload.commits)
   } catch (error) {
 
